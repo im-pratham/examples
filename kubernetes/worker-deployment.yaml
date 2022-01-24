@@ -1,9 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: flink-worker
 spec:
   replicas: 2
+  selector:
+    matchLabels:
+      app: flink
+      component: worker
   template:
     metadata:
       labels:
@@ -12,7 +16,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: flink:1.5
+        image: flink:1.8
         args:
         - taskmanager
         ports:
@@ -25,3 +29,5 @@ spec:
         env:
         - name: JOB_MANAGER_RPC_ADDRESS
           value: flink-master
+      imagePullSecrets:
+        - name: docker
